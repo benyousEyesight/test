@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.benyou.dao.INewsDao">
+	<select id="getCount" resultType="int">
+		select count(*) from n_news
+	</select>
+	<resultMap type="News" id="map1">
+		<id column="id" property="id"/>
+		<result column="title" property="title"/>
+		<result column="description" property="description"/>
+		<result column="createtime" property="createtime"/>
+		<result column="author" property="author"/>
+		<association property="user" javaType="User">
+			<id column="id" property="id"/>
+			<result column="username" property="username"/>
+		</association>
+		
+	</resultMap>
+	
+	
+	<select id="getAll" parameterType="Page" resultMap="map1">
+		select n.*,u.* from n_news n,n_user u where u.id=n.author limit #{begin},#{pageSize}
+	</select>
+	<delete id="deleteNews" parameterType="News">
+		delete from n_news where id=#{id}
+	
+	</delete>
+	<insert id="addNews" parameterType="News">
+		insert into n_news (id,title,createtime,content,type,author,description) values(#{id},#{title},#{createtime},#{content},#{type},#{author},#{description})
+	</insert>
+	<select id="getByid" parameterType="News" resultType="News">
+		select * from n_news where id=#{id}
+	</select>
+	<update id="updateNews" parameterType="News">
+		update n_news set title=#{title},createtime=#{createtime},content=#{content},type=#{type},description=#{description},author=#{author} where id = #{id} 
+	</update>
+	
+	<select id="queryLike" parameterType="News" resultType="News">
+		select * from n_news 
+		<where>
+			<if test="title !=''">
+				or title LIKE CONCAT(CONCAT('%',#{title},'%'))
+			</if>
+			<if test="type !=''">
+				or type LIKE CONCAT(CONCAT('%',#{type},'%'))			
+			</if>		
+			<if test="description!=''">
+				or description LIKE CONCAT(CONCAT('%',#{description},'%'))
+			</if>		
+			<if test="createtime !=''">
+				or createtime LIKE CONCAT(CONCAT('%',#{createtime},'%'))
+			</if>		
+			<if test="content !=''">
+				or content LIKE CONCAT(CONCAT('%',#{content},'%'))
+			</if>		
+		</where>	
+	</select>
+	
+	<select id="getByAuthor" parameterType="User" resultType="News" >
+		select n.title,n.content from n_news n where author=#{id}
+	</select>
+	
+</mapper>

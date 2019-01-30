@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.benyou.dao.IUserDao">
+	<select id="getUser" parameterType="User" resultType="User">
+		select * from n_user where account=#{account} and password=#{password}
+	</select>
+	<select id="getAll" resultType="User">
+		select * from n_user 
+	</select>
+	<insert id="addUser" parameterType="User" >
+		insert into n_user (id,account,password,username,auth) values(#{id},#{account},#{password},#{username},#{auth})
+	</insert>
+	<delete id="delUser" parameterType="User">
+		delete from n_user where id=#{id}
+	</delete>
+	<select id="getAuser" parameterType="User" resultType="User">
+		select * from n_user where id = #{id}
+	</select>
+	<update id="updateUser" parameterType="User">
+		update n_user set account=#{account},password=#{password},username=#{username},auth=#{auth} where id=#{id} 
+	</update>
+	<select id="getListUser" parameterType="User" resultType="User">
+		select * from n_user 
+		<where>
+			<if test="id!=''">
+				or id like CONCAT('%',#{id},'%')
+			</if>
+			<if test="account!=''">
+				or account like CONCAT('%',#{account},'%')
+			</if>
+			<if test="username!=''">
+				or username like CONCAT('%',#{username},'%')
+			</if>
+			<if test="auth!=''">
+				or auth like CONCAT('%',#{auth},'%')
+			</if>
+			
+		</where>
+	
+	</select>
+	
+</mapper>
